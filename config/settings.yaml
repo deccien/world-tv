@@ -44,6 +44,8 @@ name_match_iptvorg: true                  # give un-tagged entries an IPTV-org i
 denylist_regex:
   - '\b(xxx|porn|porno|adult|erotic|erotica|hentai|playboy|hustler|brazzers)\b'
   - '\b18\s*\+'
+  # Israeli subscription (HOT / yes) channels: include only via a legitimate free source, so excluded by default.
+  - '^(hot (drama|zone|cinema|comedy|bidur|3|8)|yes (movies|tv|docu|kidz|drama|action|comedy)|viva premium)\b'
 # URL patterns that look like personal subscription credentials (Xtream-style) are dropped.
 url_denylist_regex:
   - '[?&](username|password|passwd|pass)='
