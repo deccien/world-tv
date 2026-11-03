@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>World TV playlists</title>
+<meta name="description" content="Daily-built worldwide M3U playlists of free, public TV streams, grouped by country.">
+<style>
+  :root { --bg:#0f1720; --card:#17222e; --fg:#e8eef4; --mut:#9fb0c0; --acc:#4cc2ff; --ok:#5fd38d; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--fg); }
+  main { max-width:760px; margin:0 auto; padding:20px 16px 48px; }
+  h1 { font-size:1.7rem; margin:.2em 0 .1em; }
+  h2 { font-size:1.1rem; margin:1.6em 0 .6em; color:var(--acc); }
+  p.lead { color:var(--mut); margin-top:0; }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; }
+  .stat { background:var(--card); border-radius:12px; padding:12px; }
+  .stat b { display:block; font-size:1.35rem; }
+  .stat span { color:var(--mut); font-size:.85rem; }
+  .pl { background:var(--card); border-radius:12px; padding:12px; margin-bottom:10px; }
+  .pl .t { font-weight:600; }
+  .pl .d { color:var(--mut); font-size:.88rem; margin-bottom:8px; }
+  .row { display:flex; gap:8px; }
+  input { flex:1; min-width:0; background:#0b1118; color:var(--fg); border:1px solid #2a3a4a; border-radius:8px; padding:10px; font:14px ui-monospace,Menlo,monospace; }
+  button { background:var(--acc); color:#04121c; border:0; border-radius:8px; padding:0 14px; font-weight:600; font-size:15px; min-height:44px; }
+  button.ok { background:var(--ok); }
+  ol { padding-left:1.2em; } li { margin:.35em 0; }
+  .more a { color:var(--acc); }
+  footer { color:var(--mut); font-size:.8rem; margin-top:2em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>World TV</h1>
+  <p class="lead">Free, publicly available TV streams from around the world, grouped by country and rebuilt every day. Nothing is hosted here: these are playlists of links.</p>
+
+  <div class="stats" id="stats">
+    <div class="stat"><b id="s-upd">…</b><span>Last update (UTC)</span></div>
+    <div class="stat"><b id="s-ch">…</b><span>Channels</span></div>
+    <div class="stat"><b id="s-st">…</b><span>Streams</span></div>
+    <div class="stat"><b id="s-co">…</b><span>Countries</span></div>
+    <div class="stat"><b id="s-src">…</b><span>Sources OK</span></div>
+  </div>
+
+  <h2>Playlist URLs</h2>
+  <div id="lists"></div>
+
+  <h2>OTTplayer on iPhone</h2>
+  <ol>
+    <li>Install <b>OttPlayertv</b> from the App Store, open it and sign in (create the account at <b>ottplayer.tv</b> if you have none). Add this iPhone as a device when the app asks.</li>
+    <li>In Safari, sign in at <b>ottplayer.tv</b> → your profile → <b>Playlists</b> → <b>Add playlist</b>.</li>
+    <li>Give it a name, choose <b>Link / URL</b> as the source, and paste one of the URLs above (start with <i>Lite</i> or <i>Favorites</i> on a phone).</li>
+    <li>Under <b>Devices</b>, tick your iPhone and save. (Later: the gear icon next to the playlist → Devices.)</li>
+    <li>Back in the app, pull to refresh / open the playlist list and pick it. Keep auto-update on so the daily rebuild reaches the app.</li>
+  </ol>
+  <p class="more">Some streams are geo-blocked or not 24/7; when one fails, try the next “Name | 2”. Details: <a href="report.md">build report</a> · <a href="report.json">report.json</a></p>
+  <footer>Built from public sources (IPTV-org, Doubo, Free-TV, Famelack, Samsung TV Plus, Pluto TV and others; see the report for licences). Only free/FTA/FAST streams are included.</footer>
+</main>
+<script>
+(function () {
+  var base = location.origin + location.pathname.replace(/[^\/]*$/, "");
+  var lists = [
+    ["world.m3u", "Master (everything)", "All countries, all alternative streams, Favorites on top."],
+    ["world-lite.m3u", "Lite", "Every country, top channels per country, 1–2 streams each. Best for phones."],
+    ["favorites.m3u", "Favorites", "Israel, world news, US, UK, Arabic, Latin America, Africa, Pacific, documentary, music."],
+    ["news.m3u", "News", "News channels by country."],
+    ["entertainment.m3u", "Entertainment", "Entertainment, series and movies."],
+    ["sports.m3u", "Sports", ""],
+    ["documentary.m3u", "Documentary", ""],
+    ["music.m3u", "Music", ""]
+  ];
+  var box = document.getElementById("lists");
+  lists.forEach(function (l) {
+    var url = base + l[0];
+    var d = document.createElement("div");
+    d.className = "pl";
+    d.innerHTML = '<div class="t"></div><div class="d"></div><div class="row"><input readonly><button type="button">Copy</button></div>';
+    d.querySelector(".t").textContent = l[1];
+    d.querySelector(".d").textContent = l[2] + (l[2] ? " " : "");
+    d.querySelector(".d").setAttribute("data-file", l[0]);
+    var inp = d.querySelector("input"); inp.value = url;
+    var btn = d.querySelector("button");
+    btn.addEventListener("click", function () {
+      function done() { btn.textContent = "Copied"; btn.className = "ok"; setTimeout(function(){ btn.textContent = "Copy"; btn.className = ""; }, 1500); }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url).then(done, function () { inp.select(); document.execCommand("copy"); done(); });
+      } else { inp.focus(); inp.setSelectionRange(0, url.length); document.execCommand("copy"); done(); }
+    });
+    box.appendChild(d);
+  });
+  function fmt(n) { return (n || 0).toLocaleString(); }
+  fetch(base + "report.json", { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (r) {
+    var t = r.totals || {};
+    document.getElementById("s-upd").textContent = (r.build_time_utc || "").replace("T", " ").replace("Z", "");
+    document.getElementById("s-ch").textContent = fmt(t.unique_channels);
+    document.getElementById("s-st").textContent = fmt(t.unique_urls);
+    document.getElementById("s-co").textContent = fmt(t.countries_with_channels);
+    document.getElementById("s-src").textContent = (t.sources_ok + (t.sources_from_cache || 0)) + " / " + t.sources_total;
+    var files = r.files || {};
+    document.querySelectorAll(".d[data-file]").forEach(function (el) {
+      var f = files[el.getAttribute("data-file")];
+      if (f) el.textContent += fmt(f.entries) + " entries · " + (f.bytes / 1048576).toFixed(1) + " MB";
+    });
+  }).catch(function () { document.getElementById("s-upd").textContent = "n/a"; });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+# World TV build settings.
+# ---------------------------------------------------------------
+# The ONLY value you must change after forking/creating the repo:
+github_user: deccien
+repo_name: world-tv
+# ---------------------------------------------------------------
+
+title: World TV
+
+# Public Pages URL (safeguard reads report.json from here). Empty = derive https://{github_user}.github.io/{repo_name}/
+# In GitHub Actions the env var PAGES_URL (set from actions/configure-pages) wins.
+pages_url: "https://deccien.github.io/world-tv/"
+
+# Default HTTP user agent for fetching sources. {github_user}/{repo_name} are substituted.
+user_agent: "WorldTV-Builder/1.0 (+https://github.com/{github_user}/{repo_name})"
+
+fetch:
+  timeout_seconds: 60
+  retries: 3              # attempts per URL (bounded)
+  backoff_seconds: 2      # exponential: 2, 4, 8 ...
+  concurrency: 4          # parallel downloads
+  max_bytes: 80000000     # refuse anything larger than ~80 MB
+
+cache_dir: cache          # last-good copy of every source (restored by actions/cache in CI)
+output_dir: site
+
+# Channel shaping
+max_alternatives: 8                 # streams kept per channel in world.m3u
+alternative_name_format: "{name} | {n}"
+favorites_on_top_of_world: true     # also put the Favorites groups at the top of world.m3u
+international_group: International
+
+lite:
+  per_country: 25                   # channels per country in world-lite.m3u (every country kept)
+  streams_per_channel: 2
+  priority_categories: [news, general]
+
+# IPTV-org options
+include_unlinked_iptvorg_streams: false   # streams.json rows with no channel: no country/NSFW metadata
+exclude_closed_channels: true
+name_match_iptvorg: true                  # give un-tagged entries an IPTV-org id when the name is a unique match in that country
+
+# Exclusions (case-insensitive regexes). Name/group denylist applies to every source.
+denylist_regex:
+  - '\b(xxx|porn|porno|adult|erotic|erotica|hentai|playboy|hustler|brazzers)\b'
+  - '\b18\s*\+'
+# URL patterns that look like personal subscription credentials (Xtream-style) are dropped.
+url_denylist_regex:
+  - '[?&](username|password|passwd|pass)='
+  - '/(get|player_api)\.php\?'
+allowed_schemes: [http, https]
+# Web pages (not media streams) that IPTV players cannot open directly.
+page_url_regex:
+  - '^https?://(www\.|m\.)?(youtube\.com|youtu\.be)/'
+  - '^https?://(www\.)?(twitch\.tv|dailymotion\.com/video|facebook\.com)/'
+
+# Category files. Keys are output files (<key>.m3u); values are IPTV-org category ids.
+category_files:
+  news: [news, business, weather]
+  entertainment: [entertainment, series, movies, comedy, family, animation, classic, lifestyle]
+  music: [music]
+  documentary: [documentary, science, travel, outdoor, culture]
+  sports: [sports, auto]
+
+# Group-title keyword -> category hints for sources without IPTV-org metadata.
+group_category_hints:
+  news: news
+  noticias: news
+  business: business
+  weather: weather
+  music: music
+  musica: music
+  documentar: documentary
+  sport: sports
+  deporte: sports
+  movie: movies
+  film: movies
+  cine: movies
+  series: series
+  kids: kids
+  children: kids
+  comedy: comedy
+  entertainment: entertainment
+  general: general
+  religio: religious
+  culture: culture
+  education: education
+  lifestyle: lifestyle
+
+# Safeguard: fail the build (keeping the previous deployment live) when the new
+# world.m3u entry count drops by more than this fraction vs the published report.json.
+max_entry_drop: 0.30
+
+# Usability limits; exceeding them produces a warning in the report.
+limits:
+  max_world_entries: 40000
+  max_world_mb: 15

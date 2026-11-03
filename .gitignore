@@ -1,0 +1,13 @@
+# generated build output (deployed via GitHub Pages artifact, not committed)
+site/*
+!site/index.html
+site.new/
+
+# source cache (restored/saved by actions/cache in CI)
+cache/*
+!cache/.gitkeep
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/

@@ -1,0 +1,95 @@
+# Country naming and mapping overrides.
+#
+# Display names come from pycountry (common_name if present, else name);
+# entries under `names` override them.
+names:
+  CI: "Côte d’Ivoire"
+  TR: "Türkiye"
+  PS: "Palestine"
+  KR: "South Korea"
+  KP: "North Korea"
+  RU: "Russia"
+  IR: "Iran"
+  SY: "Syria"
+  VN: "Vietnam"
+  LA: "Laos"
+  TW: "Taiwan"
+  BO: "Bolivia"
+  VE: "Venezuela"
+  TZ: "Tanzania"
+  MD: "Moldova"
+  FM: "Micronesia"
+  CD: "DR Congo"
+  CG: "Congo"
+  VA: "Vatican City"
+  BN: "Brunei"
+  CV: "Cape Verde"
+  CZ: "Czechia"
+  MK: "North Macedonia"
+  SZ: "Eswatini"
+  GB: "United Kingdom"
+  US: "United States"
+  XK: "Kosovo"         # not ISO 3166-1, but used by IPTV-org
+  MO: "Macao"
+  HK: "Hong Kong"
+
+# Non-ISO or legacy codes found in sources -> ISO alpha-2
+code_aliases:
+  UK: GB
+  EL: GR
+  XK: XK
+  KS: XK
+
+# Codes that mean "no single country" (go to International)
+non_country_codes: [INT, WW, UN, EU, UNDEFINED, ALL, WORLD, XX]
+
+# Free-text group-title / region labels -> country code (case-insensitive exact match).
+# Country names known to pycountry and IPTV-org are matched automatically; list only extras.
+group_aliases:
+  "uk": GB
+  "great britain": GB
+  "england": GB
+  "scotland": GB
+  "wales": GB
+  "usa": US
+  "u.s.a.": US
+  "america": US
+  "korea": KR
+  "south korea": KR
+  "north korea": KP
+  "trinidad": TT
+  "macau": MO
+  "日本 / japan": JP
+  "czech republic": CZ
+  "turkey": TR
+  "türkiye": TR
+  "russia": RU
+  "iran": IR
+  "palestine": PS
+  "ivory coast": CI
+  "cote d'ivoire": CI
+  "vietnam": VN
+  "laos": LA
+  "taiwan": TW
+  "bolivia": BO
+  "venezuela": VE
+  "syria": SY
+  "moldova": MD
+  "kosovo": XK
+  "nz": NZ
+
+# Manual name-based map, applied only when nothing better is known.
+# Each rule: regex on channel name -> country code.
+manual_map:
+  - pattern: '^Kan 11\b'
+    country: IL
+  - pattern: '^Knesset'
+    country: IL
+  - pattern: '^RTÉ\b|^RTE (One|2|News)\b'
+    country: IE
+  - pattern: '^TVNZ\b'
+    country: NZ
+  - pattern: '^PNG ?TV\b|^EMTV\b'
+    country: PG
+  - pattern: '^Fiji (One|TV)\b|^FBC TV\b'
+    country: FJ

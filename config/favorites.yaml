@@ -1,0 +1,90 @@
+# Favorites: picked from what the build actually found. Nothing here invents a URL.
+#
+# group_mode:
+#   per_rule -> one flat group per rule, named "<prefix><rule name>" (e.g. "Favorites: Israel")
+#   single   -> everything in one group named single_group_name
+group_mode: per_rule
+group_prefix: "Favorites: "
+single_group_name: "★ Favorites"
+streams_per_channel: 2        # alternatives kept per favorite channel
+
+# Each rule picks channels in this order:
+#   1. `ids`: regexes on the channel key (IPTV-org id, optionally with @Feed), in the listed order
+#   2. then channels matching ALL given filters: countries, categories, languages, name_regex
+# until `limit` is reached. Channels with a logo and with more alternatives are preferred.
+rules:
+  - name: Israel
+    ids:
+      - '^Kan11\.il$'
+      - '^Keshet12\.il$'
+      - '^Channel13\.il$'
+      - '^Now14\.il$'
+      - '^i24NEWSHebrew\.il$'
+      - '^i24NEWSEnglishWorld\.il$'
+      - '^KnessetChannel\.il$'
+      - '^Makan33\.il$'
+      - '^Channel9\.il$'
+    countries: [IL]
+    categories: [news, general]
+    limit: 15
+
+  - name: World News
+    ids:
+      - '^BBCNews\.uk$'
+      - '^AlJazeera\.qa@English$'
+      - '^AlJazeera\.qa$'
+      - '^France24\.fr@English$'
+      - '^France24\.fr$'
+      - '^DW\.de@English$'
+      - '^CNNInternational\.us'
+      - '^i24NEWSEnglishWorld\.il$'
+      - '^EuronewsEnglish\.fr$'
+      - '^SkyNews\.uk$'
+      - '^SkyNewsInternational\.uk$'
+      - '^NHKWorldJapan\.jp$'
+      - '^TRTWorld\.tr$'
+    limit: 15
+
+  - name: USA
+    countries: [US]
+    categories: [news, general]
+    limit: 20
+
+  - name: UK
+    countries: [GB]
+    categories: [news, general]
+    limit: 15
+
+  - name: Arabic
+    ids:
+      - '^AlJazeera\.qa$'
+      - '^AlArabiya\.ae$'
+      - '^SkyNewsArabia\.ae$'
+      - '^France24\.fr@Arabic$'
+      - '^DW\.de@Arabic$'
+      - '^i24NEWSArabic\.il$'
+    languages: [ara]
+    categories: [news, general]
+    limit: 20
+
+  - name: Latin America
+    countries: [MX, AR, CL, CO, PE, VE, EC, BO, PY, UY, BR, CR, PA, GT, HN, SV, NI, CU, DO, PR]
+    categories: [news, general]
+    limit: 25
+
+  - name: Africa
+    countries: [NG, GH, KE, ZA, ET, TZ, UG, RW, SN, CI, CM, CD, EG, MA, DZ, TN, ZW, ZM, MZ, AO, SO, SD]
+    categories: [news, general]
+    limit: 25
+
+  - name: Pacific Islands
+    countries: [FJ, PG, WS, TO, VU, SB, KI, TV, NR, PW, FM, MH, CK, NU, PF, NC, GU, AS, MP, WF, TK]
+    limit: 25
+
+  - name: Documentary
+    categories: [documentary]
+    limit: 20
+
+  - name: Music
+    categories: [music]
+    limit: 20
