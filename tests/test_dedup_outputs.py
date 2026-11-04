@@ -96,7 +96,10 @@ def test_outputs_valid(tmp_path, settings, countries_cfg, iptv):
     assert "#EXTVLCOPT:http-user-agent=UA (x, y)" in world
     assert ",BBC News\n" in world                          # single stream keeps plain name
     lite = (tmp_path / "world-lite.m3u").read_text(encoding="utf-8")
-    assert lite.count("Channels TV |") == 2                 # lite: max 2 streams per channel
+    assert "Channels TV |" not in lite and ",Channels TV\n" in lite   # lite: one stream per channel, plain name
+    test = (tmp_path / "world-test.m3u").read_text(encoding="utf-8")
+    tgroups = [l.split('group-title="')[1].split('"')[0] for l in test.split("\n") if l.startswith("#EXTINF")]
+    assert tgroups and len(tgroups) == len(set(tgroups)) and "International" not in tgroups  # one per country
     for f in files:
         assert validate_playlist(tmp_path / f)["entries"] == files[f]["entries"]
 

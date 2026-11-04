@@ -9,7 +9,8 @@ proxied: the playlists only contain links.
 | Playlist | URL | What |
 |---|---|---|
 | Master | https://deccien.github.io/world-tv/world.m3u | every country, every alternative stream (max 8 per channel), Favorites groups on top |
-| Lite | https://deccien.github.io/world-tv/world-lite.m3u | every country, up to 25 channels each (news/general and channels with logos first), 1–2 streams each |
+| Lite | https://deccien.github.io/world-tv/world-lite.m3u | every country, up to 25 channels each (news/general and channels with logos first), one stream each |
+| Test | https://deccien.github.io/world-tv/world-test.m3u | 50 channels, one from each of the 50 best-covered countries, for checking a player import |
 | Favorites | https://deccien.github.io/world-tv/favorites.m3u | Israel, world news, US, UK, Arabic, Latin America, Africa, Pacific islands, documentary, music |
 | News / Entertainment / Music / Documentary / Sports | `…/news.m3u`, `…/entertainment.m3u`, `…/music.m3u`, `…/documentary.m3u`, `…/sports.m3u` | by category, grouped by country |
 | Report | https://deccien.github.io/world-tv/report.md (`report.json`) | totals, countries, per-source stats, exclusions |

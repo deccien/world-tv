@@ -32,8 +32,12 @@ international_group: International
 
 lite:
   per_country: 25                   # channels per country in world-lite.m3u (every country kept)
-  streams_per_channel: 2
+  streams_per_channel: 1             # one stream per channel keeps the file small for player imports
   priority_categories: [news, general]
+
+test:
+  countries: 50                     # world-test.m3u: one channel from each of this many countries
+  streams_per_channel: 1
 
 # IPTV-org options
 include_unlinked_iptvorg_streams: false   # streams.json rows with no channel: no country/NSFW metadata

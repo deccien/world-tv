@@ -163,6 +163,18 @@ def build_outputs(channels: list, settings: dict, fav_cfg: dict, out_dir: Path) 
     files["world-lite.m3u"] = {"bytes": write(out_dir / "world-lite.m3u", text), "entries": n,
                                "channels": sum(len(cs) for _, cs, _ in lite_sections)}
 
+    test = settings.get("test", {})
+    n_countries = int(test.get("countries", 50))
+    test_streams = int(test.get("streams_per_channel", 1))
+    real = [(g, cs) for g, cs in groups if g != intl and cs]
+    # the best-covered countries, one well-described channel each (news/general, logo, id first)
+    chosen = sorted(real, key=lambda x: (-len(x[1]), x[0].casefold()))[:n_countries]
+    test_sections = [(g, lite_pick(cs, 1, lite.get("priority_categories")), test_streams)
+                     for g, cs in sorted(chosen, key=lambda x: x[0].casefold())]
+    text, n = render(test_sections, name_fmt)
+    files["world-test.m3u"] = {"bytes": write(out_dir / "world-test.m3u", text), "entries": n,
+                               "channels": sum(len(cs) for _, cs, _ in test_sections)}
+
     text, n = render(fav_sections, name_fmt)
     files["favorites.m3u"] = {"bytes": write(out_dir / "favorites.m3u", text), "entries": n,
                               "channels": sum(len(cs) for _, cs, _ in fav_sections)}
