@@ -10,6 +10,7 @@ proxied: the playlists only contain links.
 |---|---|---|
 | Master | https://deccien.github.io/world-tv/world.m3u | every country, every alternative stream (max 8 per channel), Favorites groups on top |
 | Lite | https://deccien.github.io/world-tv/world-lite.m3u | every country, up to 25 channels each (news/general and channels with logos first), one stream each |
+| Regional (full master, split) | world-europe-1/2, world-usa-canada-1/2, world-latin-america, world-middle-east-africa, world-asia-pacific (.m3u) | every channel and stream of world.m3u, split by region, each file under 2 MB so players like OTTplayer can import them. Regions are set in config/regions.yaml; a region over the cap is split into -1, -2 ... parts automatically, so part counts can change as sources grow. International is in every file. |
 | Test | https://deccien.github.io/world-tv/world-test.m3u | 50 channels, one from each of the 50 best-covered countries, for checking a player import |
 | Favorites | https://deccien.github.io/world-tv/favorites.m3u | Israel, world news, US, UK, Arabic, Latin America, Africa, Pacific islands, documentary, music |
 | News / Entertainment / Music / Documentary / Sports | `…/news.m3u`, `…/entertainment.m3u`, `…/music.m3u`, `…/documentary.m3u`, `…/sports.m3u` | by category, grouped by country |

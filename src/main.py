@@ -15,7 +15,7 @@ from . import config as cfg
 from .classify import Classifier
 from .deduplicate import dedup_urls, group_channels
 from .fetch import fetch_all, fetch_json, load_cache, FetchResult
-from .generate import build_outputs
+from .generate import build_outputs, build_regional
 from .normalize import normalize_url
 from .parse import (HLSPlaylistError, decode_bytes, load_iptvorg, load_json, parse_famelack,
                     parse_iptvorg_streams, parse_m3u, parse_mjh_channels)
@@ -217,6 +217,10 @@ def run(argv=None) -> int:
         shutil.rmtree(tmp_out)
     tmp_out.mkdir(parents=True)
     files = build_outputs(channels, settings, fav_cfg, tmp_out)
+    regional = build_regional(channels, settings, cfg.load_regions(cdir), tmp_out)
+    files.update(regional)
+    for fname, meta in regional.items():
+        log.info("  %-28s %6d entries %10d bytes  (%s)", fname, meta["entries"], meta["bytes"], meta["region"])
     fav_groups = files.get("_favorite_groups")
     playlist_files = {k: v for k, v in files.items() if not k.startswith("_")}
     try:

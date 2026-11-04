@@ -47,3 +47,7 @@ def load_countries(config_dir: Path | None = None) -> dict:
 
 def load_favorites(config_dir: Path | None = None) -> dict:
     return _load("favorites.yaml", config_dir)
+
+
+def load_regions(config_dir: Path | None = None) -> dict:
+    return _load("regions.yaml", config_dir)

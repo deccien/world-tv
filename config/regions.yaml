@@ -1,0 +1,20 @@
+# Regional playlists (world-<key>.m3u). A region bigger than max_bytes is split into -1, -2 ... parts.
+# Countries by ISO 3166-1 alpha-2 code. Unlisted countries go to asia-pacific (logged). International goes into every regional file.
+max_bytes: 2000000
+fallback_region: asia-pacific
+regions:
+  europe:
+    name: "Europe"
+    countries: [AD, AL, AT, AX, BA, BE, BG, BY, CH, CZ, DE, DK, EE, ES, FI, FO, FR, GG, GI, GR, HR, HU, IE, IM, IS, IT, JE, LI, LT, LU, LV, MC, MD, ME, MK, MT, NL, NO, PL, PT, RO, RS, RU, SE, SI, SJ, SK, SM, UA, UK, VA, XK]
+  usa-canada:
+    name: "USA & Canada"
+    countries: [CA, US]
+  latin-america:
+    name: "Latin America & Caribbean"
+    countries: [AG, AI, AR, AW, BB, BL, BM, BO, BQ, BR, BS, BZ, CL, CO, CR, CU, CW, DM, DO, EC, FK, GD, GF, GL, GP, GS, GT, GY, HN, HT, JM, KN, KY, LC, MF, MQ, MS, MX, NI, PA, PE, PM, PR, PY, SR, SV, SX, TC, TT, UY, VC, VE, VG, VI]
+  middle-east-africa:
+    name: "Middle East & Africa"
+    countries: [AE, AO, BF, BH, BI, BJ, BW, CD, CF, CG, CI, CM, CV, CY, DJ, DZ, EG, EH, ER, ET, GA, GH, GM, GN, GQ, GW, IL, IQ, IR, JO, KE, KM, KW, LB, LR, LS, LY, MA, MG, ML, MR, MU, MW, MZ, NA, NE, NG, OM, PS, QA, RE, RW, SA, SC, SD, SH, SL, SN, SO, SS, ST, SY, SZ, TD, TF, TG, TN, TR, TZ, UG, YE, YT, ZA, ZM, ZW]
+  asia-pacific:
+    name: "Asia & Pacific"
+    countries: [AF, AM, AQ, AS, AU, AZ, BD, BN, BT, BV, CC, CK, CN, CX, FJ, FM, GE, GU, HK, HM, ID, IN, IO, JP, KG, KH, KI, KP, KR, KZ, LA, LK, MH, MM, MN, MO, MP, MV, MY, NC, NF, NP, NR, NU, NZ, PF, PG, PH, PK, PN, PW, SB, SG, TH, TJ, TK, TL, TM, TO, TV, TW, UM, UZ, VN, VU, WF, WS]

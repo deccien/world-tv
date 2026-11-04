@@ -191,3 +191,70 @@ def build_outputs(channels: list, settings: dict, fav_cfg: dict, out_dir: Path) 
                                  "channels": sum(len(x) for _, x, _ in sections)}
     files["_favorite_groups"] = [{"group": g, "channels": len(cs)} for g, cs in fav]
     return files
+
+
+def build_regional(channels: list, settings: dict, regions_cfg: dict, out_dir: Path) -> dict:
+    """Write world-<region>.m3u files (split into -1, -2 ... when over max_bytes).
+
+    Every channel of world.m3u's country groups lands in exactly one regional file
+    (all streams kept); the International group is added to each file."""
+    if not regions_cfg or not regions_cfg.get("regions"):
+        return {}
+    intl = settings.get("international_group", "International")
+    name_fmt = settings.get("alternative_name_format", "{name} | {n}")
+    cap = int(regions_cfg.get("max_bytes", 2_000_000))
+    fallback = regions_cfg.get("fallback_region") or next(iter(regions_cfg["regions"]))
+    code_to_region = {}
+    for key, r in regions_cfg["regions"].items():
+        for c in r.get("countries") or []:
+            code_to_region[str(c).upper()] = key
+    groups = by_country(channels, intl)
+    intl_section = [(g, cs, None) for g, cs in groups if g == intl]
+    per_region: dict = {k: [] for k in regions_cfg["regions"]}
+    for g, cs in groups:
+        if g == intl:
+            continue
+        code = (cs[0].country or "").upper()
+        per_region[code_to_region.get(code, fallback)].append((g, cs, None))
+
+    def size(sections):
+        return len(render(sections, name_fmt)[0].encode("utf-8"))
+
+    files = {}
+    for key, sections in per_region.items():
+        if not sections:
+            continue
+        # pack countries (alphabetical) into parts under the cap; split an oversized country by channel
+        parts, cur = [], []
+        for g, cs, m in sections:
+            whole = size([(g, cs, m)] + intl_section)
+            if whole > cap:
+                # oversized country: cut into k balanced chunks, each kept under the cap
+                k = -(-whole // int(cap * 0.9))
+                while True:
+                    step = -(-len(cs) // k)
+                    chunks = [cs[i:i + step] for i in range(0, len(cs), step)]
+                    if all(size([(g, c, m)] + intl_section) <= cap for c in chunks) or step == 1:
+                        break
+                    k += 1
+                for c in chunks:
+                    if cur and size(cur + [(g, c, m)] + intl_section) > cap:
+                        parts.append(cur)
+                        cur = []
+                    cur.append((g, c, m))
+                continue
+            if cur and size(cur + [(g, cs, m)] + intl_section) > cap:
+                parts.append(cur)
+                cur = []
+            cur.append((g, cs, m))
+        if cur:
+            parts.append(cur)
+        for i, part in enumerate(parts, 1):
+            fname = f"world-{key}.m3u" if len(parts) == 1 else f"world-{key}-{i}.m3u"
+            secs = part + intl_section
+            text, n = render(secs, name_fmt)
+            files[fname] = {"bytes": write(out_dir / fname, text), "entries": n,
+                            "channels": sum(len(cs) for _, cs, _ in secs),
+                            "region": regions_cfg["regions"][key].get("name", key),
+                            "countries": sorted({g for g, _, _ in part})}
+    return files

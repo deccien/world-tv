@@ -140,3 +140,20 @@ def test_safeguard():
     assert "within" in check_drop(75, {"totals": {"world_entries": 100}}, 0.3)
     with pytest.raises(SafeguardError):
         check_drop(69, {"totals": {"world_entries": 100}}, 0.3)
+
+
+def test_regional_covers_every_country_once(tmp_path, settings, countries_cfg, iptv):
+    from src.generate import build_regional
+    chans = _channels(settings, countries_cfg, iptv)
+    regions = {"max_bytes": 2_000_000, "fallback_region": "rest",
+               "regions": {"africa": {"name": "Africa", "countries": ["NG"]}, "rest": {"name": "Rest", "countries": []}}}
+    files = build_regional(chans, settings, regions, tmp_path)
+    seen = {}
+    for f in files:
+        for line in (tmp_path / f).read_text(encoding="utf-8").split("\n"):
+            if line.startswith("#EXTINF"):
+                g = line.split('group-title="')[1].split('"')[0]
+                if g != settings.get("international_group", "International"):
+                    seen.setdefault(g, set()).add(f)
+    assert seen and all(len(v) == 1 for v in seen.values())   # each country in exactly one file
+    assert "Nigeria" in seen and seen["Nigeria"] == {"world-africa.m3u"}
